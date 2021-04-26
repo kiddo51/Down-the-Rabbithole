@@ -1,0 +1,28 @@
+{0} paid {1} with counterfit money
+{0} stole {1}'s dance moves
+{0} bit {1}'s ear off
+{0} keyed {1}'s car
+{0} coughed on {1} without covering their mouth
+{0} cut in front of {1} in line at the DMV
+{0} insulted {1}'s mother
+{0} refused to look at {1}'s family photos
+{0} forgot {1}'s birthday
+{0} ran over {1}'s foot with a golf cart
+{0} signed {1} up for a spam caller list
+{0} killed {1}'s character in World of Warcraft
+{0} took {1}'s last stick of bubblegum
+{0} farted in {1}'s apartment
+{0} took {1}'s parking spot
+{0} thoght {1} was waving at them but they were really waving at the person behind them
+{0} and {1} seen at baseball game together
+{0} holds door open for {1}
+{0} performs cpr on {1}, saves life
+{0} performs cpr on {1}; it was unnecessary and unappreciated
+{0} refused to let {1} use their restroom
+{0} complimented {1} on their fashion sense
+{0} claims to see the future, fortells great disaster for {1}
+{0} challenges {1} to a trivia night at the local pub
+{0} seen at fancy restaurant with {1}
+{0} went on vacation and didn't even get a souvenir for {1}
+
+
