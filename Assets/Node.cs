@@ -42,18 +42,18 @@ public class Node : MonoBehaviour, IPointerClickHandler
 		if(selectedNode==null){
 			selectedNode = this;
 			positiveSelect = positive;
-			Debug.Log(gameObject.name + "Selected, positive = " + positive);
+			//Debug.Log(gameObject.name + "Selected, positive = " + positive);
 		}
 		else if(positiveSelect != positive){
 			selectedNode = null;
-			Debug.Log("Selection Removed");
+			//Debug.Log("Selection Removed");
 		}
 		else if(selectedNode==this){
 			selectedNode = null;
-			Debug.Log("Selection Removed");
+			//Debug.Log("Selection Removed");
 		}
 		else{
-			Debug.Log("Altering Connection");
+			//Debug.Log("Altering Connection");
 			Connect(positive);
 			selectedNode=null;
 		}

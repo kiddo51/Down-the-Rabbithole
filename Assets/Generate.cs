@@ -35,7 +35,7 @@ public class Generate : MonoBehaviour
 	}
 	
 	public string GetName(){
-		int random = Random.Range(0,namesList.Count);
+		int random = Random.Range(0,namesList.Count-1);
 		string name = namesList[random];
 		namesList.RemoveAt(random);
 		return name;
@@ -157,13 +157,21 @@ public class Generate : MonoBehaviour
     public void CreateAllegiances() {
         // create desired connections, don't need to create full connection, just dictionary of booleans or something. make sure everything is connected.
         // by the associative nature we're using, all nodes will end up on one of two sides, so maybe you just have to create two lists and randomly assort each node to one of the two lists
-        // allNodes[0] => teamA
-        // foreach (Node node in allNodes) {
-        //    if (node == allNodes[0]) {
-        //       continue;
-        //    }
-        //    randomly add to teamA or teamB
+        
+		//assign main node to teamA
+		teamA.Add(allNodes[0]);
 
+		//    randomly add to teamA or teamB
+		foreach (Node node in allNodes) {
+			if (node == allNodes[0]) {
+				continue;
+			}
+			if(Random.Range(0.0f, 1.0f) < 0.5){
+				Debug.Log("Team B includes: " + node.name);
+				teamB.Add(node);
+            }
+		}
+		
         // store each list as a static variable (team1, team2 or something like that) and a variable that says which team the main node is on (we'd be able to search it, but for ease of use)
         
     }
@@ -174,13 +182,50 @@ public class Generate : MonoBehaviour
     }
 
     public bool CheckConnections() {
-        // use the Connection.Connections list
-        // for each connection involving the main node, add the other node to a list
-        // compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
+		// use the Connection.Connections list
+		// for each connection involving the main node, add the other node to a list
+		// compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
 
-        // if teamB matches exactly the connections, return true
+		// gather all connections involving main node
+		List<Node> checkTeamB = new List<Node>();
+		foreach (Connection connection in Connection.Connections){
+			//check if main node is part of the connection
+			if(connection.NodeA == allNodes[0] && !connection.positive){
+				checkTeamB.Add(connection.NodeB);
+				Debug.Log("Connection to " + connection.NodeB.name + " acknowledged.");
+			}
+            if(connection.NodeB == allNodes[0] && !connection.positive){
+				checkTeamB.Add(connection.NodeA);
+				Debug.Log("Connection to " + connection.NodeA.name + " acknowledged.");
+			}
+        }
 
-        return false;
+		//check if each teamB node is in checkTeamB and remove it
+        foreach(Node node in teamB){
+            if (checkTeamB.Contains(node)){
+				checkTeamB.Remove(node);
+			}
+            else{
+				Debug.Log("Missing at least one selection");
+				Debug.Log(node.name + " is one of the missing suspects");
+				return false;
+			}
+        }
+
+		//win condition
+        if (checkTeamB.Count == 0){
+			Debug.Log("You win!");
+			return true;
+        }
+
+
+		//loop for debugging purposes
+		Debug.Log("Too many selections!");
+		foreach (Node node in checkTeamB){
+			Debug.Log(node.name + " is not actually part of Team B");
+		}
+
+		return false;
     }
 
     public void EndGame() {
