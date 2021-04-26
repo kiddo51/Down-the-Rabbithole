@@ -10,14 +10,20 @@ public class Generate : MonoBehaviour
 	
 	public static int startNodes = 10;//number of starting nodes
 	public static List<Node> allNodes = new List<Node>();
+    public static List<Node> teamA = new List<Node>();
+    public static List<Node> teamB = new List<Node>();
 	public static List<string> namesList = new List<string>();
+
+    public GameObject keepTryingButton;
 	
     // Start is called before the first frame update
     void Start()
     {
 		GetNamesList();
         CreateNodes(startNodes);
-		CreateNewspaper();
+        //CreateNewspaper();
+        CreateAllegiances();
+        CreateHeadlines();
     }
 	
 	
@@ -29,11 +35,7 @@ public class Generate : MonoBehaviour
 	}
 	
 	public string GetName(){
-		if (namesList.Count == 0 || namesList == null){
-			Debug.Log( "Error: Could Not Retrieve a Name for a Node");
-			return null;
-		}
-		int random = Random.Range(0,namesList.Count-1);
+		int random = Random.Range(0,namesList.Count);
 		string name = namesList[random];
 		namesList.RemoveAt(random);
 		return name;
@@ -152,9 +154,43 @@ public class Generate : MonoBehaviour
 		//TODO add lines of squiggles
 	}
 	
-    // Update is called once per frame
-    void Update()
-    {
+    public void CreateAllegiances() {
+        // create desired connections, don't need to create full connection, just dictionary of booleans or something. make sure everything is connected.
+        // by the associative nature we're using, all nodes will end up on one of two sides, so maybe you just have to create two lists and randomly assort each node to one of the two lists
+        // allNodes[0] => teamA
+        // foreach (Node node in allNodes) {
+        //    if (node == allNodes[0]) {
+        //       continue;
+        //    }
+        //    randomly add to teamA or teamB
+
+        // store each list as a static variable (team1, team2 or something like that) and a variable that says which team the main node is on (we'd be able to search it, but for ease of use)
         
     }
+
+    public void CreateHeadlines() {
+        // create headlines from text list and the two allegiance lists we created, use format strings
+        // make sure every entity is in a headline at least once (I think that should cover making sure everything is connected, but check)
+    }
+
+    public bool CheckConnections() {
+        // use the Connection.Connections list
+        // for each connection involving the main node, add the other node to a list
+        // compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
+
+        // if teamB matches exactly the connections, return true
+
+        return false;
+    }
+
+    public void EndGame() {
+        if (CheckConnections()) {
+            // put up end text
+        } else {
+            // put up "keep trying" text and a button to go back to the board
+            keepTryingButton.SetActive(true);
+        }
+    }
+
+
 }
