@@ -29,7 +29,11 @@ public class Generate : MonoBehaviour
 	}
 	
 	public string GetName(){
-		int random = Random.Range(0,namesList.Count);
+		if (namesList.Count == 0 || namesList == null){
+			Debug.Log( "Error: Could Not Retrieve a Name for a Node");
+			return null;
+		}
+		int random = Random.Range(0,namesList.Count-1);
 		string name = namesList[random];
 		namesList.RemoveAt(random);
 		return name;
@@ -39,7 +43,7 @@ public class Generate : MonoBehaviour
 
 	public void CreateNodes(int amount){
 		GameObject prefab = Resources.Load<GameObject>("Prefabs/Node");
-		for(int i=0;i<=amount;i++){
+		for(int i=0;i<amount;i++){
 			CreateNode(prefab);
 		}
 	}
@@ -77,6 +81,17 @@ public class Generate : MonoBehaviour
 	}
 	
 	public bool CollisionDetected(RectTransform rtCheck){
+		
+		if(allNodes.Count == 0){
+			Debug.Log("Error: Node List empty");
+			return false;
+        }
+
+		if(allNodes == null){
+			Debug.Log("Error: Node List is null");
+			return false;
+		}
+
 		foreach(Node element in allNodes){
 			RectTransform rtElement = element.GetComponent<RectTransform>() as RectTransform;
 			if((rtElement.anchoredPosition-rtCheck.anchoredPosition).magnitude < 260){
@@ -84,6 +99,7 @@ public class Generate : MonoBehaviour
 				return true;
 			}
 		}
+		Debug.Log("Placement Successfully chosen for " + rtCheck.name);
 		return false;
 	}
 	
