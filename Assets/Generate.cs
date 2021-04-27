@@ -44,6 +44,7 @@ public class Generate : MonoBehaviour
         List<string> headlinesList = new List<string>(headlinesArray);
 
         string unformattedHeadline = headlinesList[Random.Range(0, headlinesList.Count - 1)];
+        Debug.Log(mainNode);
         string headline = string.Format(unformattedHeadline, mainNode.name.Trim());
         topHeadline.SetText(headline);
     }	
@@ -55,7 +56,7 @@ public class Generate : MonoBehaviour
 	}
 	
 	public string GetName(){
-		int random = Random.Range(0,namesList.Count - 1);
+		int random = Random.Range(0,namesList.Count-1);
 		string name = namesList[random];
 		namesList.RemoveAt(random);
 		return name;
@@ -65,7 +66,7 @@ public class Generate : MonoBehaviour
 
 	public void CreateNodes(int amount){
 		GameObject prefab = Resources.Load<GameObject>("Prefabs/Node");
-		for(int i=0;i<=amount;i++){
+		for(int i=0;i<amount;i++){
 			CreateNode(prefab);
 		}
 	}
@@ -103,6 +104,17 @@ public class Generate : MonoBehaviour
 	}
 	
 	public bool CollisionDetected(RectTransform rtCheck){
+		
+		if(allNodes.Count == 0){
+			Debug.Log("Error: Node List empty");
+			return false;
+        }
+
+		if(allNodes == null){
+			Debug.Log("Error: Node List is null");
+			return false;
+		}
+
 		foreach(Node element in allNodes){
 			RectTransform rtElement = element.GetComponent<RectTransform>() as RectTransform;
 			if((rtElement.anchoredPosition-rtCheck.anchoredPosition).magnitude < 260){
@@ -110,6 +122,7 @@ public class Generate : MonoBehaviour
 				return true;
 			}
 		}
+		Debug.Log("Placement Successfully chosen for " + rtCheck.name);
 		return false;
 	}
 	
@@ -163,35 +176,49 @@ public class Generate : MonoBehaviour
 	}
 
     public void CreateAllegiances() {
-        //assign main node to teamA
-        teamA.Add(allNodes[0]);
+        // create desired connections, don't need to create full connection, just dictionary of booleans or something. make sure everything is connected.
+        // by the associative nature we're using, all nodes will end up on one of two sides, so maybe you just have to create two lists and randomly assort each node to one of the two lists
+        
+		//assign main node to teamA
+		teamA.Add(allNodes[0]);
         mainNode = allNodes[0];
 
-        //    randomly add to teamA or teamB
-        foreach (Node node in allNodes) {
-            if (node == allNodes[0]) {
-                continue;
+		//    randomly add to teamA or teamB
+		foreach (Node node in allNodes) {
+			if (node == allNodes[0]) {
+				continue;
+			}
+			if(Random.Range(0.0f, 1.0f) < 0.5){
+				Debug.Log("Team B includes: " + node.name);
+				teamB.Add(node);
             }
-            if (Random.Range(0.0f, 1.0f) < 0.5) {
-                Debug.Log("Team B includes: " + node.name);
-                teamB.Add(node);
-            }
-        }
+		}
+		
+        // store each list as a static variable (team1, team2 or something like that) and a variable that says which team the main node is on (we'd be able to search it, but for ease of use)
+        
     }
 
     public void CreateHeadlines() {
         // create headlines from text list and the two allegiance lists we created, use format strings
         // make sure every entity is in a headline at least once (I think that should cover making sure everything is connected, but check)
 
-        string headlinesText = Resources.Load<TextAsset>("TextFiles/Headlines.txt").text;
-        string[] headlinesArray = headlinesText.Split('\n');
-        List<string> headlinesList = new List<string>(headlinesArray);
+        string goodHeadlinesText = Resources.Load<TextAsset>("TextFiles/GoodHeadlines").text;
+        string badHeadlinesText = Resources.Load<TextAsset>("TextFiles/BadHeadlines").text;
+        string[] goodHeadlinesArray = goodHeadlinesText.Split('\n');
+        List<string> goodHeadlinesList = new List<string>(goodHeadlinesArray);
+        string[] badHeadlinesArray = badHeadlinesText.Split('\n');
+        List<string> badHeadlinesList = new List<string>(badHeadlinesArray);
 
         // Should create at least one headline for each node, and since each refers another, an average of two nodes, with some variety
         foreach (Node node in allNodes) {
             Node otherNode = null;
             while (otherNode == null || otherNode == node) {
                 otherNode = allNodes[Random.Range(0, allNodes.Count - 1)];
+            }
+            bool sameTeam = (teamA.Contains(node) && teamA.Contains(otherNode)) || (teamB.Contains(node) && teamB.Contains(otherNode));
+            List<string> headlinesList = goodHeadlinesList;
+            if (!sameTeam) {
+                headlinesList = badHeadlinesList;
             }
             string unformattedHeadline = headlinesList[Random.Range(0, headlinesList.Count - 1)];
             string headline = string.Format(unformattedHeadline, node.name.Trim(), otherNode.name.Trim());
@@ -238,35 +265,34 @@ public class Generate : MonoBehaviour
     }
 
     public bool CheckConnections() {
-        // use the Connection.Connections list
-        // for each connection involving the main node, add the other node to a list
-        // compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
+		// use the Connection.Connections list
+		// for each connection involving the main node, add the other node to a list
+		// compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
 
-        // if teamB matches exactly the connections, return true
-
-        // gather all connections involving main node
-        List<Node> checkTeamB = new List<Node>();
-        foreach (Connection connection in Connection.Connections) {
-            //check if main node is part of the connection
-            if (connection.NodeA == allNodes[0] && !connection.positive) {
-                checkTeamB.Add(connection.NodeB);
-                Debug.Log("Connection to " + connection.NodeB.name + " acknowledged.");
-            }
-            if (connection.NodeB == allNodes[0] && !connection.positive) {
-                checkTeamB.Add(connection.NodeA);
-                Debug.Log("Connection to " + connection.NodeA.name + " acknowledged.");
-            }
+		// gather all connections involving main node
+		List<Node> checkTeamB = new List<Node>();
+		foreach (Connection connection in Connection.Connections){
+			//check if main node is part of the connection
+			if(connection.NodeA == mainNode && !connection.positive){
+				checkTeamB.Add(connection.NodeB);
+				Debug.Log("Connection to " + connection.NodeB.name + " acknowledged.");
+			}
+            if(connection.NodeB == mainNode && !connection.positive){
+				checkTeamB.Add(connection.NodeA);
+				Debug.Log("Connection to " + connection.NodeA.name + " acknowledged.");
+			}
         }
 
-        //check if each teamB node is in checkTeamB and remove it
-        foreach (Node node in teamB) {
-            if (checkTeamB.Contains(node)) {
-                checkTeamB.Remove(node);
-            } else {
-                Debug.Log("Missing at least one selection");
-                Debug.Log(node.name + " is one of the missing suspects");
-                return false;
-            }
+		//check if each teamB node is in checkTeamB and remove it
+        foreach(Node node in teamB){
+            if (checkTeamB.Contains(node)){
+				checkTeamB.Remove(node);
+			}
+            else{
+				Debug.Log("Missing at least one selection");
+				Debug.Log(node.name + " is one of the missing suspects");
+				return false;
+			}
         }
 
         //win condition

@@ -10,6 +10,13 @@ public class Connection : MonoBehaviour
 	public Node NodeB;
 	public bool positive;
 	
+    public void ClearConnections() {
+        List<Connection> oldConnections = new List<Connection>(Connections);
+        Connections.Clear();
+        foreach (Connection connection in oldConnections) {
+            Destroy(connection.gameObject);
+        }
+    }
 	
     // Start is called before the first frame update
     void Start()

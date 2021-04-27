@@ -1,0 +1,9 @@
+{0} and {1} seen at baseball game together
+{0} holds door open for {1}
+{0} performs cpr on {1}, saves life
+{0} complimented {1} on their fashion sense
+{0} seen at fancy restaurant with {1}
+{0} and {1} seen at horse races together
+{0} gives {1} a jumbo check
+{0} adds {1} as an emergency contact
+{0} donates $1 million to The {1} Foundation

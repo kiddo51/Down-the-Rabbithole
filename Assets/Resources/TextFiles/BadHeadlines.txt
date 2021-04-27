@@ -14,15 +14,7 @@
 {0} farted in {1}'s apartment
 {0} took {1}'s parking spot
 {0} thoght {1} was waving at them but they were really waving at the person behind them
-{0} and {1} seen at baseball game together
-{0} holds door open for {1}
-{0} performs cpr on {1}, saves life
 {0} performs cpr on {1}; it was unnecessary and unappreciated
 {0} refused to let {1} use their restroom
-{0} complimented {1} on their fashion sense
 {0} claims to see the future, fortells great disaster for {1}
-{0} challenges {1} to a trivia night at the local pub
-{0} seen at fancy restaurant with {1}
 {0} went on vacation and didn't even get a souvenir for {1}
-
-
