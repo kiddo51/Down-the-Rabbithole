@@ -1,7 +1,28 @@
 {0} trips over tied-together shoe laces
-{0} thinks they got food poisoning
-{0} has the plot to Wanda-Vision spoiled
-{0} can't find their keys
+{0} has the plot to WandaVision spoiled
+{0} has keys stolen
 {0} got the wrong toppings on their burger
 {0} sits on whoopee cushion
 {0} trips on broken stair
+{0} has car keyed
+{0} killed last night
+{0} has identity stolen
+{0} has email hacked
+{0} mugged
+{0} gets food poisoning
+{0}'s flower bed ruined
+{0} finds poop on porch
+{0}'s house TP'ed
+{0} cut off in traffic
+Pie stolen off {0}'s window sill
+{0} embarassed by a photo posted online
+{0}'s fast food order was messed up
+{0} turned away from club last night
+{0} slips on marbles in walkway
+{0} has browser history revealed
+{0} has nude photos leaked
+{0} has bike stolen
+{0} has yard sign stolen
+{0} gets mauled by loose polar bear
+{0} gets trampled by loose hippos
+{0} has tip jar stolen

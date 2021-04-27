@@ -7,3 +7,14 @@
 {0} gives {1} a jumbo check
 {0} adds {1} as an emergency contact
 {0} donates $1 million to The {1} Foundation
+{0} helps {1} beat a raid boss
+{0} returns {1}'s lost wallet
+{0} reads TV guide for {1}
+{0} shares half their candy bar with {1}
+{0} tweets congratulations to {1}
+{0} bakes cookies for {1}
+{0} gives {1} ride to doctor's appointment
+{0} mows the lawn for {1}
+{0} reminds {1} about Mothers Day in time to get flowers
+{0} watches {1}'s dog for the weekend
+{0} buys {1} a coffee
