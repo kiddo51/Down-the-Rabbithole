@@ -2380,6 +2380,7 @@ RectTransform:
   - {fileID: 1755877626}
   - {fileID: 1344463930}
   - {fileID: 2078700718}
+  - {fileID: 2087863009}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5833,7 +5834,7 @@ RectTransform:
   m_Children:
   - {fileID: 840799765}
   m_Father: {fileID: 1344463930}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -8144,7 +8145,6 @@ RectTransform:
   - {fileID: 897879845}
   - {fileID: 1694817922}
   - {fileID: 692076162}
-  - {fileID: 2087863009}
   - {fileID: 873556195}
   m_Father: {fileID: 398426338}
   m_RootOrder: 4
@@ -9026,7 +9026,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 100}
+  m_SizeDelta: {x: 1200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1662405070
 MonoBehaviour:
@@ -9053,7 +9053,18 @@ MonoBehaviour:
     2. The Friend of an Enemy is
     an Enemy
 
-    3. The Friend of a Friend is a Friend'
+    3. The Friend of a Friend is a Friend
+
+    4. Left-clicking two
+    nodes is a good thing
+
+    5. Right-clicking two nodes is a bad thing
+
+    6.
+    I only need to prove the bad connections
+
+    7. Tin foil hats are both functional
+    and fashionable'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11034,7 +11045,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -110}
+  m_AnchoredPosition: {x: 99.999954, y: -112.50002}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1837533975
@@ -12503,12 +12514,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1837533974}
-  m_Father: {fileID: 1344463930}
-  m_RootOrder: 11
+  m_Father: {fileID: 398426338}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 894.3259, y: 392.2798}
   m_SizeDelta: {x: 400, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2116365627

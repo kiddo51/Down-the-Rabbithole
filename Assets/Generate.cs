@@ -191,6 +191,8 @@ public class Generate : MonoBehaviour
 			if(Random.Range(0.0f, 1.0f) < 0.5){
 				Debug.Log("Team B includes: " + node.name);
 				teamB.Add(node);
+            } else {
+                teamA.Add(node);
             }
 		}
 		
@@ -209,13 +211,34 @@ public class Generate : MonoBehaviour
         string[] badHeadlinesArray = badHeadlinesText.Split('\n');
         List<string> badHeadlinesList = new List<string>(badHeadlinesArray);
 
-        // Should create at least one headline for each node, and since each refers another, an average of two nodes, with some variety
+        /*Dictionary<Node, bool> nodesConnectedToMain = new Dictionary<Node, bool>();
         foreach (Node node in allNodes) {
+            nodesConnectedToMain[node] = false;
+            if (node == mainNode) {
+                nodesConnectedToMain[node] = true;
+            }
+        }*/
+        List<Node> nodesConnectedToMain = new List<Node>();
+        nodesConnectedToMain.Add(mainNode);
+
+        // Should create at least one headline for each node, and since each refers another, an average of two nodes, with some variety
+        List<Node> allOtherNodes = new List<Node>(allNodes);
+        allOtherNodes.Remove(mainNode);
+        for (int i = 0; i < allOtherNodes.Count + 3; i++) {
+            Node node = allOtherNodes[Random.Range(0, allOtherNodes.Count - 1)];
+            if (i < allOtherNodes.Count) {
+                node = allOtherNodes[i];
+            }
+            if (node == mainNode) {
+                continue;
+            }
             Node otherNode = null;
             while (otherNode == null || otherNode == node) {
-                otherNode = allNodes[Random.Range(0, allNodes.Count - 1)];
+                otherNode = nodesConnectedToMain[Random.Range(0, nodesConnectedToMain.Count - 1)];
             }
+
             bool sameTeam = (teamA.Contains(node) && teamA.Contains(otherNode)) || (teamB.Contains(node) && teamB.Contains(otherNode));
+            Debug.Log(node.name + " - " + otherNode.name + " sameteam: " + sameTeam + " - " + teamA.Contains(node) + " " + teamA.Contains(otherNode) + " " + teamB.Contains(node) + " " + teamB.Contains(otherNode));
             List<string> headlinesList = goodHeadlinesList;
             if (!sameTeam) {
                 headlinesList = badHeadlinesList;
@@ -224,15 +247,22 @@ public class Generate : MonoBehaviour
             string headline = string.Format(unformattedHeadline, node.name.Trim(), otherNode.name.Trim());
             headlinesList.Remove(unformattedHeadline);
 
-            headlines.Add(headline);
+            headlines.Insert(Random.Range(0, headlines.Count - 1),headline);
             //Debug.Log("Adding headline: " + headline);
+            nodesConnectedToMain.Add(node);
+            if (nodesConnectedToMain.Contains(mainNode)) {
+                nodesConnectedToMain.Remove(mainNode);
+            }
         }
         Debug.Log("Headlines: " + headlines.Count);
 
         // Each column is 8 rows, 4 columns (32 slots total, and we want to sort of spread things out evenly)
         GameObject headlinePrefab = Resources.Load<GameObject>("Prefabs/Headline");
         GameObject scribblePrefab = Resources.Load<GameObject>("Prefabs/Scribble");
-        int headlinesPerColumn = headlines.Count / 4 + 1;
+        int headlinesPerColumn = headlines.Count / 4;
+        if (headlines.Count % 4 != 0) {
+            headlinesPerColumn += 1;
+        }
         //Debug.Log("Headlines per column: " + headlinesPerColumn);
         for (int column = 0; column < 4; column++) {
             List<int> headlineSpots = new List<int>();
