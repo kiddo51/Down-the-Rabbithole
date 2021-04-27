@@ -8,9 +8,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
 {
 	public static Node selectedNode;
 	public static bool positiveSelect;
-	
-	
-	
+
+    public AudioSource tackSound;	
 	
     // Start is called before the first frame update
     void Start()
@@ -42,18 +41,18 @@ public class Node : MonoBehaviour, IPointerClickHandler
 		if(selectedNode==null){
 			selectedNode = this;
 			positiveSelect = positive;
-			Debug.Log(gameObject.name + "Selected, positive = " + positive);
+			//Debug.Log(gameObject.name + "Selected, positive = " + positive);
 		}
 		else if(positiveSelect != positive){
 			selectedNode = null;
-			Debug.Log("Selection Removed");
+			//Debug.Log("Selection Removed");
 		}
 		else if(selectedNode==this){
 			selectedNode = null;
-			Debug.Log("Selection Removed");
+			//Debug.Log("Selection Removed");
 		}
 		else{
-			Debug.Log("Altering Connection");
+			//Debug.Log("Altering Connection");
 			Connect(positive);
 			selectedNode=null;
 		}
@@ -61,7 +60,11 @@ public class Node : MonoBehaviour, IPointerClickHandler
 	
 	public void Connect(bool positive)
 	{
-		Connection existingConnection = null;
+        if (Generate.soundsOn) {
+            tackSound.Play();
+        }
+
+        Connection existingConnection = null;
 		//check whether connection already exists
 		foreach(Connection element in Connection.Connections){
 			if(element.Check(this,selectedNode)){
@@ -73,7 +76,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
 					if(!positive){
 						elementImage.color = Color.red;
 					}
-					return;
+                    return;
 				}
 			}
 		}
@@ -81,7 +84,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
 		if(existingConnection !=null){
 			Connection.Connections.Remove(existingConnection);
 			Destroy(existingConnection.gameObject);
-			return;
+            return;
 		}
 		
 		//make connection

@@ -10,12 +10,23 @@ public class Generate : MonoBehaviour
 	
 	public static int startNodes = 10;//number of starting nodes
 	public static List<Node> allNodes = new List<Node>();
+    public static Node mainNode;
     public static List<Node> teamA = new List<Node>();
     public static List<Node> teamB = new List<Node>();
 	public static List<string> namesList = new List<string>();
+    public static List<string> headlines = new List<string>();
 
     public GameObject keepTryingButton;
-	
+    public GameObject[] columns;
+    public TextMeshProUGUI topHeadline;
+    public GameObject winScreen;
+
+    public static bool soundsOn = true;
+
+    public static void ToggleSounds() {
+        soundsOn = !soundsOn;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +35,18 @@ public class Generate : MonoBehaviour
         //CreateNewspaper();
         CreateAllegiances();
         CreateHeadlines();
+        CreateTopHeadline();
     }
-	
-	
+
+    public void CreateTopHeadline() {
+        string headlinesText = Resources.Load<TextAsset>("TextFiles/TopHeadlines").text;
+        string[] headlinesArray = headlinesText.Split('\n');
+        List<string> headlinesList = new List<string>(headlinesArray);
+
+        string unformattedHeadline = headlinesList[Random.Range(0, headlinesList.Count - 1)];
+        string headline = string.Format(unformattedHeadline, mainNode.name.Trim());
+        topHeadline.SetText(headline);
+    }	
 	
 	public void GetNamesList(){
 		string namesText = Resources.Load<TextAsset>("TextFiles/Names.txt").text;
@@ -141,24 +161,80 @@ public class Generate : MonoBehaviour
 		
 		//TODO add lines of squiggles
 	}
-	
-    public void CreateAllegiances() {
-        // create desired connections, don't need to create full connection, just dictionary of booleans or something. make sure everything is connected.
-        // by the associative nature we're using, all nodes will end up on one of two sides, so maybe you just have to create two lists and randomly assort each node to one of the two lists
-        // allNodes[0] => teamA
-        // foreach (Node node in allNodes) {
-        //    if (node == allNodes[0]) {
-        //       continue;
-        //    }
-        //    randomly add to teamA or teamB
 
-        // store each list as a static variable (team1, team2 or something like that) and a variable that says which team the main node is on (we'd be able to search it, but for ease of use)
-        
+    public void CreateAllegiances() {
+        //assign main node to teamA
+        teamA.Add(allNodes[0]);
+        mainNode = allNodes[0];
+
+        //    randomly add to teamA or teamB
+        foreach (Node node in allNodes) {
+            if (node == allNodes[0]) {
+                continue;
+            }
+            if (Random.Range(0.0f, 1.0f) < 0.5) {
+                Debug.Log("Team B includes: " + node.name);
+                teamB.Add(node);
+            }
+        }
     }
 
     public void CreateHeadlines() {
         // create headlines from text list and the two allegiance lists we created, use format strings
         // make sure every entity is in a headline at least once (I think that should cover making sure everything is connected, but check)
+
+        string headlinesText = Resources.Load<TextAsset>("TextFiles/Headlines.txt").text;
+        string[] headlinesArray = headlinesText.Split('\n');
+        List<string> headlinesList = new List<string>(headlinesArray);
+
+        // Should create at least one headline for each node, and since each refers another, an average of two nodes, with some variety
+        foreach (Node node in allNodes) {
+            Node otherNode = null;
+            while (otherNode == null || otherNode == node) {
+                otherNode = allNodes[Random.Range(0, allNodes.Count - 1)];
+            }
+            string unformattedHeadline = headlinesList[Random.Range(0, headlinesList.Count - 1)];
+            string headline = string.Format(unformattedHeadline, node.name.Trim(), otherNode.name.Trim());
+            headlinesList.Remove(unformattedHeadline);
+
+            headlines.Add(headline);
+            //Debug.Log("Adding headline: " + headline);
+        }
+        Debug.Log("Headlines: " + headlines.Count);
+
+        // Each column is 8 rows, 4 columns (32 slots total, and we want to sort of spread things out evenly)
+        GameObject headlinePrefab = Resources.Load<GameObject>("Prefabs/Headline");
+        GameObject scribblePrefab = Resources.Load<GameObject>("Prefabs/Scribble");
+        int headlinesPerColumn = headlines.Count / 4 + 1;
+        //Debug.Log("Headlines per column: " + headlinesPerColumn);
+        for (int column = 0; column < 4; column++) {
+            List<int> headlineSpots = new List<int>();
+            if (headlinesPerColumn > headlines.Count) {
+                headlinesPerColumn = headlines.Count; //This will probably happen to the last column, except in cases where it's evenly divisible by 4
+            }
+            for (int i = 0; i < headlinesPerColumn; i++) {
+                int spot = Random.Range(0, 8);
+                while (headlineSpots.Contains(spot)) {
+                    spot = Random.Range(0, 8);
+                }
+                headlineSpots.Add(spot);
+            }
+            for (int i = 0; i < 8; i++) {
+                GameObject newHeadlineObject = null;
+                if (headlineSpots.Contains(i)) {
+                    newHeadlineObject = Instantiate(headlinePrefab);
+                    TextMeshProUGUI newHeadlineText = newHeadlineObject.GetComponent<TextMeshProUGUI>();
+                    newHeadlineText.SetText(headlines[0]);
+                    headlines.Remove(headlines[0]);
+                } else {
+                    newHeadlineObject = Instantiate(scribblePrefab);
+                }
+                newHeadlineObject.transform.parent = columns[column].transform;
+                RectTransform newHeadlineTransform = newHeadlineObject.gameObject.GetComponent<RectTransform>();
+                newHeadlineTransform.localPosition = Vector2.zero;
+            }
+        }
+
     }
 
     public bool CheckConnections() {
@@ -167,6 +243,44 @@ public class Generate : MonoBehaviour
         // compare that list to the allegiance list for the main node's opposition, if they match exactly, return true, else false
 
         // if teamB matches exactly the connections, return true
+
+        // gather all connections involving main node
+        List<Node> checkTeamB = new List<Node>();
+        foreach (Connection connection in Connection.Connections) {
+            //check if main node is part of the connection
+            if (connection.NodeA == allNodes[0] && !connection.positive) {
+                checkTeamB.Add(connection.NodeB);
+                Debug.Log("Connection to " + connection.NodeB.name + " acknowledged.");
+            }
+            if (connection.NodeB == allNodes[0] && !connection.positive) {
+                checkTeamB.Add(connection.NodeA);
+                Debug.Log("Connection to " + connection.NodeA.name + " acknowledged.");
+            }
+        }
+
+        //check if each teamB node is in checkTeamB and remove it
+        foreach (Node node in teamB) {
+            if (checkTeamB.Contains(node)) {
+                checkTeamB.Remove(node);
+            } else {
+                Debug.Log("Missing at least one selection");
+                Debug.Log(node.name + " is one of the missing suspects");
+                return false;
+            }
+        }
+
+        //win condition
+        if (checkTeamB.Count == 0) {
+            Debug.Log("You win!");
+            winScreen.SetActive(true);
+            return true;
+        }
+
+        //loop for debugging purposes
+        Debug.Log("Too many selections!");
+        foreach (Node node in checkTeamB) {
+            Debug.Log(node.name + " is not actually part of Team B");
+        }
 
         return false;
     }
